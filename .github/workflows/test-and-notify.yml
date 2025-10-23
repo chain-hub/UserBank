@@ -1,0 +1,73 @@
+name: Test PetRegistry and Notify
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches-ignore:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+        
+    - name: Install dependencies
+      run: bun install
+      
+    - name: Run tests
+      id: test
+      run: bun hardhat test
+      
+    - name: Set test status
+      id: status
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "status=success" >> $GITHUB_OUTPUT
+        else
+          echo "status=failure" >> $GITHUB_OUTPUT
+        fi
+        
+  notify:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Send success notification to Telegram
+      if: needs.test.result == 'success'
+      run: |
+        MESSAGE="Тесты UserBank в ${{ github.repository }}: «${{ github.event.head_commit.message }}» от ${{ github.actor }}"
+        DEPLOY_STATUS="Тесты: ✅ Успешно"
+        HASHTAG="#userbank #tests"
+        FULL_MESSAGE="$MESSAGE\n\n$DEPLOY_STATUS\n\n$HASHTAG"
+
+        curl -X POST -H "Content-Type: application/json" \
+            -d '{"chat_id": "-1002176158373", "message_thread_id": "8507", "text": "'"$FULL_MESSAGE"'"}' \
+            "https://api.telegram.org/bot8420575246:AAHgC2nGm_9blTtFXNDS_9uKcEkC5fohKok/sendMessage"
+
+    - name: Send failure notification to Telegram
+      if: needs.test.result == 'failure'
+      run: |
+        MESSAGE="Тесты UserBank в ${{ github.repository }}: «${{ github.event.head_commit.message }}» от ${{ github.actor }}"
+        DEPLOY_STATUS="Тесты: ❌ Ошибка - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        HASHTAG="#userbank #tests #error"
+        FULL_MESSAGE="$MESSAGE\n\n$DEPLOY_STATUS\n\n$HASHTAG"
+
+        curl -X POST -H "Content-Type: application/json" \
+            -d '{"chat_id": "-1002176158373", "message_thread_id": "8507", "text": "'"$FULL_MESSAGE"'"}' \
+            "https://api.telegram.org/bot8420575246:AAHgC2nGm_9blTtFXNDS_9uKcEkC5fohKok/sendMessage"
