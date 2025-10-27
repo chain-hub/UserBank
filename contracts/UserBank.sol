@@ -22,13 +22,8 @@ contract UserBank {
     }
 
     function register(string memory _name, uint _age) public {
-        require(users[msg.sender].age == 0, "User already registered");
-        users[msg.sender] = User({
-            name: _name,
-            age: _age,
-            balance: 0,
-            deposits: new uint[](0)
-        });
+    require(users[msg.sender].age == 0, "User already registered");
+    users[msg.sender] = User(_name, _age, 0, new uint[](0));
     }
 
     function deposit() public payable {
