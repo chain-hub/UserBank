@@ -16,7 +16,7 @@ contract UserBank {
     mapping(address => User) public users;
 
     modifier onlyOwner() {
-        require(msg.sender == owner , "Only owner can call this function.");
+        require(msg.sender == owner , "Only owner can call this function");
         _;
     }
 
@@ -25,7 +25,7 @@ contract UserBank {
     }
 
     function register(string memory _name, uint _age) public  {
-        require(users[msg.sender].age == 0, "User already registered.");
+        require(users[msg.sender].age == 0, "User already registered");
         users[msg.sender] = User(_name, _age, 0, new uint[](0));
     }
 
@@ -43,7 +43,7 @@ contract UserBank {
     }
 
     function withdraw (uint _amount) public {
-        require(users[msg.sender].balance >= _amount, "Insufficient balance.");
+        require(users[msg.sender].balance >= _amount, "Insufficient balance");
         users[msg.sender].balance -= _amount;
         payable(msg.sender).transfer(_amount);
     }
