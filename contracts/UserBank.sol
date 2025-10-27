@@ -12,7 +12,7 @@ contract UserBank {
         uint balance;
         uint[] deposits;
     }
-
+    mapping(address => bool) public isRegistered;
     mapping(address => User) public users;
 
     modifier onlyOwner() {
