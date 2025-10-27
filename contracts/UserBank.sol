@@ -25,11 +25,11 @@ contract UserBank {
     }
 
     function register(string memory _name, uint _age) public  {
-        require(users[msg.sender].age == 0, "User already registered");
+        require(!isRegistered[msg.sender], "User already registered");
         users[msg.sender] = User(_name, _age, 0, new uint[](0));
     }
 
-    function deposit() public payable {
+    function deposit(uint amount) public payable {
         users[msg.sender].balance += msg.value;
         users[msg.sender].deposits.push(msg.value);
     }
@@ -43,7 +43,7 @@ contract UserBank {
     }
 
     function withdraw (uint _amount) public {
-        require(users[msg.sender].balance >= _amount, "Insufficient balance");
+        require(userBalances[msg.sender] >= amount, "Insufficient balance");
         users[msg.sender].balance -= _amount;
         payable(msg.sender).transfer(_amount);
     }
