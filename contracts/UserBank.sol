@@ -42,7 +42,7 @@ contract UserBank {
         return users[msg.sender].deposits;
     }
 
-    function withDraw (uint _amount) public {
+    function withdraw (uint _amount) public {
         require(users[msg.sender].balance >= _amount, "Insufficient balance.");
         users[msg.sender].balance -= _amount;
         payable(msg.sender).transfer(_amount);
