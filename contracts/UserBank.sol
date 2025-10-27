@@ -33,7 +33,7 @@ contract UserBank {
         user.balance += msg.value;
         user.deposits.push(msg.value);
     }
-
+//Tractorenok
     function getBalance() public view returns (uint) {
         return users[msg.sender].balance;
     }
@@ -57,5 +57,6 @@ contract UserBank {
         return (user.name, user.age, user.balance);
     }
 }
+//tractorenok
 
 
