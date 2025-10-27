@@ -3,7 +3,6 @@
 pragma solidity >=0.8.2 <0.9.0;
 contract UserBank{
     address  owner  ;
-    
     struct User{
         string name;
         uint age;
@@ -40,5 +39,4 @@ contract UserBank{
     function getUser(address _address) public onlyOwner view returns (User memory){
         return users[_address] ;
     }
-   
 }
