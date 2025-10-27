@@ -50,10 +50,9 @@ contract UserBank {
     function withdraw(uint _amount) public {
         User storage user = users[msg.sender];
         require(user.balance >= _amount, "Insufficient balance");
-
+        require(user.age > 0, "User not registered");
         user.balance -= _amount;
-        (bool success, ) = payable(msg.sender).call{value: _amount}("");
-        require(success, "Transfer failed");
+        payable(msg.sender).transfer(_amount);
     }
 
     function getUser(address _user) public view onlyOwner 
